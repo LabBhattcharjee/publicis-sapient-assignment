@@ -1,6 +1,6 @@
 node {
   stage('SC checkout'){
-    git 'https://github.com/LabBhattcharjee/coreJavaPublic'
+    git 'https://github.com/LabBhattcharjee/publicis-sapient-assignment'
   } 
   
   stage('build install'){
