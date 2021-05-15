@@ -1,5 +1,5 @@
 server:
-  port: 18080
+  port: 28082
 
 #thresholdDate : 2017-01-17
 #yyyy-MM-DD HH:mm:ss
