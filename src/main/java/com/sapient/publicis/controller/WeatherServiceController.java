@@ -26,27 +26,12 @@ import com.sapient.publicis.service.WeatherService;
 public class WeatherServiceController {
 	private final WeatherService weatherService;
 
-	//@Value("${thresholdDate:#{null}}")
-	private final String thresholdDateString;
-
 	private Date thresholdDate;
-
-//	@PostConstruct
-//	public void init() throws ParseException {
-//		if (StringUtils.isEmpty(thresholdDateString)) {
-//			thresholdDate = new Date();
-//		} else {
-//			thresholdDate = new SimpleDateFormat("yyyy-MM-DD").parse(thresholdDateString);
-//		}
-//	}
 
 	public WeatherServiceController(@Autowired final WeatherService weatherService,
 			@Value("${thresholdDate:#{null}}") final String thresholdDateString) throws ParseException {
 		this.weatherService = weatherService;
-		this.thresholdDateString = thresholdDateString;
-		if (StringUtils.isEmpty(thresholdDateString)) {
-			thresholdDate = new Date();
-		} else {
+		if (StringUtils.isNotEmpty(thresholdDateString)) {
 			thresholdDate = new SimpleDateFormat("yyyy-MM-DD").parse(thresholdDateString);
 		}
 	}
@@ -58,8 +43,7 @@ public class WeatherServiceController {
 			@RequestParam(value = "minNDays", defaultValue = "1") @Min(1) final int minNDays,
 			@RequestParam(value = "maxNDays", defaultValue = "3") @Max(5) final int maxNDays) {
 
-		final WeatherProcessingRequest request = new WeatherProcessingRequest(location, thresholdDate, minNDays,
-				maxNDays);
+		final WeatherProcessingRequest request = new WeatherProcessingRequest(location, thresholdDate, minNDays, maxNDays);
 		final WeatherProcessingResponse response = weatherService.process(request);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}

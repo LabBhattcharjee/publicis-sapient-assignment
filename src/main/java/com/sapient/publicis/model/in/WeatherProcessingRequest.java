@@ -11,16 +11,21 @@ public class WeatherProcessingRequest {
 	private final String locations;
 	private final Date minDate;
 	private final Date maxDate;
-	
-	private int minNextDays;
-	private int maxNextDays;
-	//private String cacheKey;
 
-	public WeatherProcessingRequest(final String locations, final Date thresholdDate, final int minNextDays, final int maxNextDays) {
+//	private final int minNextDays;
+//	private final int maxNextDays;
+
+	public WeatherProcessingRequest(final String locations, final Date thresholdDate, final int minNextDays,
+			final int maxNextDays) {
 		this.locations = locations;
 
+//		this.minNextDays = minNextDays;
+//		this.maxNextDays = maxNextDays;
+
 		final Calendar cal = Calendar.getInstance();
-		cal.setTime(thresholdDate);
+		if (thresholdDate != null) {
+			cal.setTime(thresholdDate);
+		}
 		cal.add(Calendar.DATE, minNextDays);
 		cal.set(Calendar.HOUR_OF_DAY, 0);
 		cal.set(Calendar.MINUTE, 0);
@@ -31,12 +36,6 @@ public class WeatherProcessingRequest {
 
 		cal.add(Calendar.DATE, maxNextDays + 1 - minNextDays);
 		this.maxDate = cal.getTime();
-		
-		this.minNextDays = minNextDays;
-		this.maxNextDays = maxNextDays;
-
-		//this.cacheKey = String.format("%d_%d_%d_%s", minNextDays, maxNextDays, thresholdDate.getTime(), locations);
 	}
-
 
 }

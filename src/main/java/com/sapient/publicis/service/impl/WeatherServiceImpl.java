@@ -21,11 +21,11 @@ public class WeatherServiceImpl implements WeatherService {
 	@Autowired
 	private WeatherRestExchange restTemplateHandler;
 
+
 	@Override
 	@Cacheable(value = "weatherCache", key = "#weatherProcessingRequest.locations.concat('_')"
-			+ ".concat(#weatherProcessingRequest.minNextDays)" 
-			+ ".concat(#weatherProcessingRequest.maxNextDays)"
-			+ ".concat(#weatherProcessingRequest.maxNextDays)")
+			+ ".concat(#weatherProcessingRequest.maxDate.getTime)" 
+			+ ".concat(#weatherProcessingRequest.minDate.getTime)")
 	public WeatherProcessingResponse process(final WeatherProcessingRequest weatherProcessingRequest) {
 		log.error("not returning from cache");
 		final WeatherResponse body = restTemplateHandler.retreive(WeatherResponse.class,
