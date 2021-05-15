@@ -1,0 +1,14 @@
+server:
+  port: 18080
+
+#thresholdDate : 2017-01-17
+#yyyy-MM-DD HH:mm:ss
+apiKey: d2929e9483efc82c82c32ee7e02d5 63e
+weatherAPIVersion: 2.5
+#reactiveMode : true
+
+# Ehcache configuration.
+spring:
+  cache:
+    jcache:
+      config: classpath:ehcache.xml
