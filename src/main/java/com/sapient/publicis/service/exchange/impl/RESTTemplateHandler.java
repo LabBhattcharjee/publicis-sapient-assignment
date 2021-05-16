@@ -3,8 +3,6 @@ package com.sapient.publicis.service.exchange.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
@@ -20,19 +18,13 @@ import com.sapient.publicis.service.exchange.WeatherRestExchange;
 @ConditionalOnExpression("#{'${reactiveMode}'!= 'true' }")
 public class RESTTemplateHandler implements WeatherRestExchange {
 
-	@Value("${apiKey}")
-	private String apiKey;
-
-	@Value("${weatherAPIVersion}")
-	private String weatherAPIVersion;
-
 	@Autowired
 	private RestTemplate restTemplate;
 
-	private Map<String, String> globalMap;
+	private final Map<String, String> globalMap;
 
-	@PostConstruct
-	public void init() {
+	public RESTTemplateHandler(@Value("${apiKey}") final String apiKey,
+			@Value("${weatherAPIVersion}") final String weatherAPIVersion) {
 		globalMap = ImmutableMap.of("APP_KEY", apiKey, "DEST_API_VERSION", weatherAPIVersion);
 	}
 

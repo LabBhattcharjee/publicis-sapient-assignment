@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.sapient.publicis.model.in.WeatherProcessingRequest;
+import com.sapient.publicis.util.WeatherServiceConstants;
 
 import json.deserializers.DateTxtDeserializer;
 import json.deserializers.TimeStampDeserializer;
@@ -21,7 +22,7 @@ import lombok.Setter;
 public class ListData {
 
 	private static final ThreadLocal<DateFormat> FORMAT = ThreadLocal
-			.withInitial(() -> new SimpleDateFormat("yyyy-MM-DD"));
+			.withInitial(() -> new SimpleDateFormat(WeatherServiceConstants.DATE_FORMAT_YYYY_MM_DD));
 
 	@JsonDeserialize(using = TimeStampDeserializer.class)
 	@JsonProperty("dt")
@@ -36,6 +37,13 @@ public class ListData {
 	private Clouds clouds;
 	@JsonProperty("wind")
 	private Wind wind;
+	
+	@JsonProperty("rain")
+	private RainDetails rain;
+	
+	@JsonProperty("snow")
+	private SnowDetails snow;
+	
 	@JsonProperty("sys")
 	private Sys sys;
 

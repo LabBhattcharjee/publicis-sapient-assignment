@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.sapient.publicis.model.out.ListData;
 import com.sapient.publicis.model.out.MainDetails;
 import com.sapient.publicis.model.out.Weather;
+import com.sapient.publicis.util.WeatherServiceConstants;
 import com.sapient.publicis.util.WeatherServiceUtility;
 
 import lombok.AccessLevel;
@@ -64,11 +65,11 @@ public class DateSpecifcAggregateData {
 
 	public String getWarning() {
 		if (WeatherServiceUtility.kelvinToDegreeCelcius(maxTemp) > 40) {
-			return "Use sunscreen lotion";
+			return WeatherServiceConstants.HEAT_WARNING;
 		}
 
 		if (rainPredicted) {
-			return "Carry umbrella";
+			return WeatherServiceConstants.RAIN_WARNING;
 		}
 		return "";
 	}

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sapient.publicis.model.in.WeatherProcessingRequest;
 import com.sapient.publicis.model.in.WeatherProcessingResponse;
 import com.sapient.publicis.service.WeatherService;
+import com.sapient.publicis.util.WeatherServiceConstants;
 
 @RestController
 public class WeatherServiceController {
@@ -32,9 +33,10 @@ public class WeatherServiceController {
 			@RequestParam(value = "city") final String location,
 			@RequestParam(value = "minNDays", defaultValue = "1") @Min(1) final int minNDays,
 			@RequestParam(value = "maxNDays", defaultValue = "3") @Max(5) final int maxNDays,
-			@RequestParam(value = "thresholdDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") final Date thresholdDate) {
+			@RequestParam(value = "thresholdDate", required = false) @DateTimeFormat(pattern = WeatherServiceConstants.DATE_FORMAT_YYYY_MM_DD) final Date thresholdDate) {
 
-		final WeatherProcessingRequest request = new WeatherProcessingRequest(location, thresholdDate, minNDays, maxNDays);
+		final WeatherProcessingRequest request = new WeatherProcessingRequest(location, thresholdDate, minNDays,
+				maxNDays);
 		final WeatherProcessingResponse response = weatherService.process(request);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}

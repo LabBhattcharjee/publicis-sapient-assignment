@@ -12,15 +12,9 @@ public class WeatherProcessingRequest {
 	private final Date minDate;
 	private final Date maxDate;
 
-//	private final int minNextDays;
-//	private final int maxNextDays;
-
 	public WeatherProcessingRequest(final String locations, final Date thresholdDate, final int minNextDays,
 			final int maxNextDays) {
 		this.locations = locations;
-
-//		this.minNextDays = minNextDays;
-//		this.maxNextDays = maxNextDays;
 
 		final Calendar cal = Calendar.getInstance();
 		if (thresholdDate != null) {
