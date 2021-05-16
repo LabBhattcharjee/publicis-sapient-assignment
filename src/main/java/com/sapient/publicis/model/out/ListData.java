@@ -27,7 +27,7 @@ public class ListData {
 	@JsonDeserialize(using = TimeStampDeserializer.class)
 	@JsonProperty("dt")
 	private Date dt;
-	@Setter(AccessLevel.NONE)
+	//@Setter(AccessLevel.NONE)
 	private String dateOnly;
 	@JsonProperty("main")
 	private MainDetails main;
@@ -54,7 +54,7 @@ public class ListData {
 	@JsonDeserialize(using = DateTxtDeserializer.class)
 	public void setDtTxt(final Date dtTxt) {
 		this.dtTxt = dtTxt;
-		this.dateOnly = FORMAT.get().format(dtTxt);
+		this.setDateOnly(dtTxt == null ? null : FORMAT.get().format(dtTxt));
 	}
 
 	public boolean isInExpectedDuration(final WeatherProcessingRequest weatherProcessingRequest) {

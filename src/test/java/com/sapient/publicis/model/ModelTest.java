@@ -23,33 +23,39 @@ class ModelTest {
 
 	@Test
 	public void testBean0() {
-		validateRecusrively(WeatherResponse.class);
+		validateRecursively(WeatherResponse.class);
 		set.clear();
 	}
 
-	private void validateRecusrively(final Class<?> class1) {
+	private void validateRecursively(final Class<?> class1) {
 		if (!set.add(class1)) {
 			return;
 		}
-		assertThat(WeatherResponse.class, allOf(hasValidBeanConstructor(), hasValidGettersAndSetters(),
-				hasValidBeanHashCode(), hasValidBeanEquals(), hasValidBeanToString()));
+
+		assertThat(class1, allOf(hasValidBeanConstructor(), hasValidGettersAndSetters(), hasValidBeanHashCode(),
+				hasValidBeanEquals(), hasValidBeanToString()));
 
 		final Field[] declaredFields = class1.getDeclaredFields();
 		for (final Field field : declaredFields) {
 			final Class<?> type = field.getType();
-			if (type.getName().contains("com.sapient")) {
-				validateRecusrively(class1);
+			if (type.getName().contains("sapient")) {
+				validateRecursively(type);
 			} else if (Iterable.class.isAssignableFrom(type)) {
 				final Type genericType = field.getGenericType();
 				final String typeName = genericType.getTypeName();
 				final String trim = typeName.substring(typeName.indexOf('<') + 1, typeName.indexOf('>')).trim();
 				try {
-					validateRecusrively(Class.forName(trim));
+					if (trim.contains("sapient")) {
+						validateRecursively(Class.forName(trim));
+					}
 				} catch (final ClassNotFoundException e) {
 					e.printStackTrace();
 				}
 			} else if (type.isArray()) {
-				validateRecusrively(type.getComponentType());
+				final Class<?> componentType = type.getComponentType();
+				if (componentType.getName().contains("sapient")) {
+					validateRecursively(componentType);
+				}
 			}
 		}
 
