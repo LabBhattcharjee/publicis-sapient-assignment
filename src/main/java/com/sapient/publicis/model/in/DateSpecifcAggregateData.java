@@ -9,9 +9,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.sapient.publicis.model.out.ListData;
+import com.sapient.publicis.model.out.MainDetails;
 import com.sapient.publicis.model.out.Weather;
+import com.sapient.publicis.util.WeatherServiceUtility;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -20,8 +25,16 @@ public class DateSpecifcAggregateData {
 	public static final Comparator<DateSpecifcAggregateData> DATE_BASE_COMPARATOR = (o1, o2) -> o1.dateValue
 			.compareTo(o2.dateValue);
 
-	private double minTemp = -274;
-	private double maxTemp = Double.MAX_VALUE;
+	@JsonIgnore
+	@Getter(AccessLevel.NONE)
+	@Setter(AccessLevel.NONE)
+	private double minTemp = 1000;
+
+	@JsonIgnore
+	@Getter(AccessLevel.NONE)
+	@Setter(AccessLevel.NONE)
+	private double maxTemp = 0;
+
 	private final String dateValue;
 
 	@JsonIgnore
@@ -39,24 +52,34 @@ public class DateSpecifcAggregateData {
 							|| (t.getDescription() != null && t.getDescription().contains("rain")));
 		}
 
-		minTemp = Math.min(minTemp, value.getMain().getTempMin());
-		maxTemp = Math.min(maxTemp, value.getMain().getTempMax());
+		final MainDetails mainInfo = value.getMain();
+		minTemp = Math.min(minTemp, mainInfo.getTempMin());
+		maxTemp = Math.max(maxTemp, mainInfo.getTempMax());
 	}
 
 	public void reconcile(final DateSpecifcAggregateData other) {
 		minTemp = Math.min(minTemp, other.minTemp);
-		maxTemp = Math.min(maxTemp, other.maxTemp);
+		maxTemp = Math.max(maxTemp, other.maxTemp);
 	}
 
 	public String getWarning() {
-		if (maxTemp - 273.15 > 40) {
-			return "Carry umbrella";
+		if (WeatherServiceUtility.kelvinToDegreeCelcius(maxTemp) > 40) {
+			return "Use sunscreen lotion";
 		}
 
 		if (rainPredicted) {
-			return "Use sunscreen lotion";
+			return "Carry umbrella";
 		}
 		return "";
+	}
+
+	// \u00B0 Unicode of degree
+	public String getMinimumTemperature() {
+		return String.format("%.3f (%.3f \u2103)", minTemp, WeatherServiceUtility.kelvinToDegreeCelcius(minTemp));
+	}
+
+	public String getMaximumTemperature() {
+		return String.format("%.3f (%.3f \u2103)", maxTemp, WeatherServiceUtility.kelvinToDegreeCelcius(maxTemp));
 	}
 
 }

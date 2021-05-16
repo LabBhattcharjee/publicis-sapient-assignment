@@ -10,7 +10,6 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.function.Consumer;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sapient.publicis.model.in.DateSpecifcAggregateData;
 import com.sapient.publicis.model.out.ListData;
 
@@ -23,7 +22,6 @@ import lombok.ToString;
 @ToString
 public class DateWiseSummaryStatistics implements Consumer<ListData> {
 
-	@JsonIgnore
 	private final Map<String, DateSpecifcAggregateData> dateWiseMap = new TreeMap<>();
 
 	public Set<DateSpecifcAggregateData> getDateWiseWeatherReport() {
