@@ -2,7 +2,6 @@ package com.sapient.publicis.controller;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -61,8 +60,9 @@ class WeatherServiceControllerMockTest {
 				.andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
 
 				// Validate the returned fields
-				.andExpect(jsonPath("message.dateWiseWeatherReport", hasSize(3))).andExpect(
-						jsonPath("message.dateWiseWeatherReport[0].warning", is(WeatherServiceConstants.RAIN_WARNING)))
+				.andExpect(jsonPath("message.dateWiseWeatherReport", hasSize(3)))
+				//
+				.andExpect(	jsonPath("message.dateWiseWeatherReport[0].warning", is(WeatherServiceConstants.RAIN_WARNING)))
 
 		;
 	}
@@ -88,9 +88,9 @@ class WeatherServiceControllerMockTest {
 				.andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
 
 				// Validate the returned fields
-				
+
 				.andExpect(jsonPath("message", is(WeatherServiceConstants.NO_DATA)))
-				.andExpect(jsonPath("message.dateWiseWeatherReport", nullValue()))
+				.andExpect(jsonPath("message.dateWiseWeatherReport").doesNotExist())
 
 		;
 	}

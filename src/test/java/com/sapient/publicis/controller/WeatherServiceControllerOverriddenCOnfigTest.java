@@ -2,9 +2,10 @@ package com.sapient.publicis.controller;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.test.context.TestPropertySource;
 
-//https://mkyong.com/spring-boot/spring-boot-junit-5-mockito/
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-class WeatherServiceControllerTest extends BaseTestTemplate {
+@TestPropertySource(locations = "classpath:testApp.yml")
+class WeatherServiceControllerOverriddenCOnfigTest extends BaseTestTemplate {
 
 }

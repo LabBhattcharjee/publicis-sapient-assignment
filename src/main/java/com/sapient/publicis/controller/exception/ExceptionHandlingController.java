@@ -11,6 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.sapient.publicis.exception.WeatherServiceException;
 import com.sapient.publicis.model.in.WeatherProcessingResponse;
 
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 @ControllerAdvice
 public class ExceptionHandlingController {
 
-	private ResponseEntity<WeatherProcessingResponse> createResponseEntity(final HttpStatus status, final String message) {// NOSONAR
+	private ResponseEntity<WeatherProcessingResponse> createResponseEntity(final HttpStatus status,
+			final String message) {
 		final List<MediaType> acceptableMediaTypes = new ArrayList<>();
 		acceptableMediaTypes.add(MediaType.APPLICATION_JSON);
 		final HttpHeaders responseHeaders = new HttpHeaders();
@@ -29,15 +31,21 @@ public class ExceptionHandlingController {
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<WeatherProcessingResponse> generic(final MethodArgumentNotValidException e) {// NOSONAR
+	public ResponseEntity<WeatherProcessingResponse> generic(final MethodArgumentNotValidException e) {
 		log.error(HttpStatus.BAD_REQUEST.getReasonPhrase(), e);
 		return createResponseEntity(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.getReasonPhrase());
 	}
 
 	@ExceptionHandler(Exception.class)
-	public ResponseEntity<WeatherProcessingResponse> generic(final Exception e) {// NOSONAR
+	public ResponseEntity<WeatherProcessingResponse> generic(final Exception e) {
 		log.error(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), e);
 		return createResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR,
 				HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
+	}
+
+	@ExceptionHandler(WeatherServiceException.class)
+	public ResponseEntity<WeatherProcessingResponse> weather(final WeatherServiceException e) {
+		log.error(HttpStatus.BAD_REQUEST.getReasonPhrase(), e);
+		return createResponseEntity(HttpStatus.BAD_REQUEST, e.getLocalizedMessage());
 	}
 }
