@@ -99,6 +99,6 @@ public abstract class BaseTestTemplate {
 		assertThat(object2).isInstanceOf(Map.class);
 		final Map<?, ?> leafMap = (Map<?, ?>) object2;
 		final Object object3 = leafMap.get("warning");
-		assertThat(object3).isEqualTo(WeatherServiceConstants.RAIN_WARNING);
+		assertThat(object3).isEqualTo(WeatherServiceConstants.getRainWarningMessage());
 	}
 }

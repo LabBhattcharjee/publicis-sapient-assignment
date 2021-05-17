@@ -62,7 +62,7 @@ class WeatherServiceControllerMockTest {
 				// Validate the returned fields
 				.andExpect(jsonPath("message.dateWiseWeatherReport", hasSize(3)))
 				//
-				.andExpect(	jsonPath("message.dateWiseWeatherReport[0].warning", is(WeatherServiceConstants.RAIN_WARNING)))
+				.andExpect(	jsonPath("message.dateWiseWeatherReport[0].warning", is(WeatherServiceConstants.getRainWarningMessage())))
 
 		;
 	}
@@ -89,7 +89,7 @@ class WeatherServiceControllerMockTest {
 
 				// Validate the returned fields
 
-				.andExpect(jsonPath("message", is(WeatherServiceConstants.NO_DATA)))
+				.andExpect(jsonPath("message", is(WeatherServiceConstants.getNoDataMessage())))
 				.andExpect(jsonPath("message.dateWiseWeatherReport").doesNotExist())
 
 		;

@@ -65,7 +65,7 @@ class WeatherServiceTestWithMockito {
 
 		final DateSpecifcAggregateData aggregateData = (DateSpecifcAggregateData) set.iterator().next();
 
-		assertThat(aggregateData.getWarning()).isEqualTo(WeatherServiceConstants.RAIN_WARNING);
+		assertThat(aggregateData.getWarning()).isEqualTo(WeatherServiceConstants.getRainWarningMessage());
 
 
 	}

@@ -65,11 +65,11 @@ public class DateSpecifcAggregateData {
 
 	public String getWarning() {
 		if (WeatherServiceUtility.kelvinToDegreeCelcius(maxTemp) > 40) {
-			return WeatherServiceConstants.HEAT_WARNING;
+			return WeatherServiceConstants.getHeatWarningMessage();
 		}
 
 		if (rainPredicted) {
-			return WeatherServiceConstants.RAIN_WARNING;
+			return WeatherServiceConstants.getRainWarningMessage();
 		}
 		return "";
 	}

@@ -44,7 +44,7 @@ public class WeatherServiceImpl implements WeatherService {
 
 		final Set<DateSpecifcAggregateData> dateWiseWeatherReport = dateWiseSummaryStatistics
 				.getDateWiseWeatherReport();
-		return new WeatherProcessingResponse(CollectionUtils.isEmpty(dateWiseWeatherReport) ? WeatherServiceConstants.NO_DATA
+		return new WeatherProcessingResponse(CollectionUtils.isEmpty(dateWiseWeatherReport) ? WeatherServiceConstants.getNoDataMessage()
 				: dateWiseSummaryStatistics);
 	}
 }
