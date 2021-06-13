@@ -3,11 +3,11 @@
  */
 package com.sapient.publicis.service;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.function.Consumer;
 
 import com.sapient.publicis.model.in.DateSpecifcAggregateData;
@@ -22,14 +22,11 @@ import lombok.ToString;
 @ToString
 public class DateWiseSummaryStatistics implements Consumer<ListData> {
 
-	private final Map<String, DateSpecifcAggregateData> dateWiseMap = new TreeMap<>();
-
-	public Set<DateSpecifcAggregateData> getDateWiseWeatherReport() {
-		final Set<DateSpecifcAggregateData> treeSet = new TreeSet<>(DateSpecifcAggregateData.DATE_BASE_COMPARATOR);
-		treeSet.addAll(dateWiseMap.values());
-		return treeSet;
-	}
-
+	private final Map<String, DateSpecifcAggregateData> dateWiseMap = new TreeMap<>();	
+	
+    public Collection<DateSpecifcAggregateData> getDateWiseWeatherReport() {
+		return dateWiseMap.values();
+    }
 	
 
 	/**

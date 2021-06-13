@@ -1,6 +1,5 @@
 package com.sapient.publicis.model.in;
 
-import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.util.CollectionUtils;
@@ -15,36 +14,32 @@ import com.sapient.publicis.util.WeatherServiceUtility;
 
 import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Getter;
 import lombok.Setter;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonPropertyOrder({ "dateValue", "minTemp", "maxTemp", "warning" })
-public class DateSpecifcAggregateData implements  DateSpecifcAggregate{
-	public static final Comparator<DateSpecifcAggregateData> DATE_BASE_COMPARATOR = (o1, o2) -> o1.dateValue
-			.compareTo(o2.dateValue);
+public class DateSpecifcAggregateData2  implements  DateSpecifcAggregate{
 
 	@JsonIgnore
-	@Getter(AccessLevel.NONE)
+//	@Getter(AccessLevel.NONE)
 	@Setter(AccessLevel.NONE)
 	private double minTemp = 1000;
 
 	@JsonIgnore
-	//@Getter(AccessLevel.NONE)
+//	@Getter(AccessLevel.NONE)
 	@Setter(AccessLevel.NONE)
 	private double maxTemp = 0;
 
-	private final String dateValue;
-
 	@JsonIgnore
 	private boolean rainPredicted;
+
+	private String minimumTemperature;
+
+	private String maximumTemperature;
 	
 	private String warning;
-
-	public DateSpecifcAggregateData(final String dateOnly) {
-		this.dateValue = dateOnly;
-	}
+	
 
 	public void accept(final ListData value) {
 		final List<Weather> weather = value.getWeather();
@@ -59,19 +54,22 @@ public class DateSpecifcAggregateData implements  DateSpecifcAggregate{
 		maxTemp = Math.max(maxTemp, mainInfo.getTempMax());
 	}
 
-	public void reconcile(final DateSpecifcAggregateData other) {
+	public DateSpecifcAggregateData2 reconcile(final DateSpecifcAggregateData2 other) {
 		minTemp = Math.min(minTemp, other.minTemp);
 		maxTemp = Math.max(maxTemp, other.maxTemp);
+		return this;
 	}
 
 
 	// \u00B0 Unicode of degree
-	public String getMinimumTemperature() {
-		return String.format("%.3f (%.3f \u2103)", minTemp, WeatherServiceUtility.kelvinToDegreeCelcius(minTemp));
+
+	public DateSpecifcAggregateData2 finisher() {
+		this.minimumTemperature = String.format("%.3f (%.3f \u2103)", minTemp,
+				WeatherServiceUtility.kelvinToDegreeCelcius(minTemp));
+		this.maximumTemperature = String.format("%.3f (%.3f \u2103)", maxTemp,
+				WeatherServiceUtility.kelvinToDegreeCelcius(maxTemp));
+		return this;
 	}
 
-	public String getMaximumTemperature() {
-		return String.format("%.3f (%.3f \u2103)", maxTemp, WeatherServiceUtility.kelvinToDegreeCelcius(maxTemp));
-	}
 
 }

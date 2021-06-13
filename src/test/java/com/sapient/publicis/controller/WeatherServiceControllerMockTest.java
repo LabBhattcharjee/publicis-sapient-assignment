@@ -8,10 +8,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Locale;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
@@ -19,10 +19,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sapient.publicis.model.out.WeatherResponse;
@@ -39,9 +41,13 @@ class WeatherServiceControllerMockTest {
 	@MockBean
 	private WeatherRestExchange weatherRestExchange;
 
-	@Test
+	@Autowired
+	private MessageSource messages;
+
+	@ParameterizedTest
+	@ValueSource(strings = { "1.0", "2.0" })
 	@DisplayName("GET Weather Report success")
-	void testWeatherReportSuccess() throws Exception {
+	void testWeatherReportSuccess(final String version) throws Exception {
 
 		final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -51,25 +57,30 @@ class WeatherServiceControllerMockTest {
 		doReturn(retVal).when(weatherRestExchange).retreive(Mockito.any(), Mockito.anyMap());
 
 		// Execute the GET request
-		mockMvc.perform(get("/weather/1.0/forecast?" + "city=London&thresholdDate=2017-01-17"))
+		mockMvc.perform(get("/weather/"
+				+ version //"1.0"
+				+ "/forecast?" + "city=London&thresholdDate=2017-01-17"))
 				// Validate the response code and content type
 				.andExpect(status().isOk())
 				// .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-
+				.andDo(MockMvcResultHandlers.print())
 				// Validate headers
 				.andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
 
 				// Validate the returned fields
-				.andExpect(jsonPath("message.dateWiseWeatherReport", hasSize(3)))
+				.andExpect(jsonPath("message", hasSize(3)))
 				//
-				.andExpect(	jsonPath("message.dateWiseWeatherReport[0].warning", is(WeatherServiceConstants.getRainWarningMessage())))
+				.andExpect(jsonPath("message[0].warning",
+						is(messages.getMessage(WeatherServiceConstants.WEATHER_SERVICE_CONSTANTS_RAIN_WARNING, null,
+								Locale.getDefault()))))
 
 		;
 	}
 
-	@Test
+	@ParameterizedTest
+	@ValueSource(strings = { "1.0", "2.0" })
 	@DisplayName("GET Weather Report Empty Resposne")
-	void testWeatherReportSuccessEmpty() throws Exception {
+	void testWeatherReportSuccessEmpty(final String version) throws Exception {
 
 		final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -79,7 +90,9 @@ class WeatherServiceControllerMockTest {
 		doReturn(retVal).when(weatherRestExchange).retreive(Mockito.any(), Mockito.anyMap());
 
 		// Execute the GET request
-		mockMvc.perform(get("/weather/1.0/forecast?" + "city=London"))
+		mockMvc.perform(get("/weather/"
+				+ version //"1.0"
+				+ "/forecast?" + "city=London"))
 				// Validate the response code and content type
 				.andExpect(status().isOk())
 				// .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -89,7 +102,9 @@ class WeatherServiceControllerMockTest {
 
 				// Validate the returned fields
 
-				.andExpect(jsonPath("message", is(WeatherServiceConstants.getNoDataMessage())))
+				.andExpect(jsonPath("message",
+						is(messages.getMessage(WeatherServiceConstants.WEATHER_SERVICE_CONSTANTS_NO_DATA, null,
+								Locale.getDefault()))))
 				.andExpect(jsonPath("message.dateWiseWeatherReport").doesNotExist())
 
 		;
@@ -99,11 +114,30 @@ class WeatherServiceControllerMockTest {
 	@ValueSource(strings = { "city1=London&thresholdDate=2017-01-17", "city1=London&maxNDays=10",
 			"city=London&maxNDays=10" })
 	void testWeatherReport(final String queryString) throws Exception {
+		versioned(queryString, "1.0");
+	}
+	
+	@ParameterizedTest
+	@ValueSource(strings = { "city1=London&thresholdDate=2017-01-17", "city1=London&maxNDays=10",
+			"city=London&maxNDays=10" })
+	void testWeatherReport2(final String queryString) throws Exception {
+		versioned(queryString, "2.0");
+	}
 
+
+	/**
+	 * @param queryString
+	 * @param version
+	 * @throws Exception
+	 */
+	private void versioned(final String queryString, final String version) throws Exception {
 		doReturn(Optional.empty()).when(weatherRestExchange).retreive(Mockito.any(), Mockito.anyMap());
 
 		// Execute the GET request
-		mockMvc.perform(get("/weather/1.0/forecast?" + queryString))
+		
+		mockMvc.perform(get("/weather/"
+				+ version
+				+ "/forecast?" + queryString))
 				// Validate the response code and content type
 				.andExpect(status().is5xxServerError())
 				// .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -116,5 +150,6 @@ class WeatherServiceControllerMockTest {
 
 		;
 	}
-
+	
+	
 }

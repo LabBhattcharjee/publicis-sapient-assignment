@@ -5,13 +5,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.MessageSource;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -27,6 +30,9 @@ import com.sapient.publicis.util.WeatherServiceConstants;
 
 @SpringBootTest
 class WeatherServiceTestWithMockito {
+	
+	@Autowired
+	private MessageSource messages;
 
 	@Mock
 	private WeatherRestExchange weatherRestExchange;
@@ -45,7 +51,7 @@ class WeatherServiceTestWithMockito {
 	void testSuccess() throws ParseException {
 		int date = 17;
 		final WeatherProcessingRequest weatherProcessingRequest = new WeatherProcessingRequest("London",
-				new SimpleDateFormat("yyyy-MM-DD").parse("2017-01-" + date++), 1, 3);
+				new SimpleDateFormat("yyyy-MM-DD").parse("2017-01-" + date++), 1, 3, "en");
 
 		final WeatherService weatherService = new WeatherServiceImpl(weatherRestExchange);
 		final WeatherProcessingResponse weatherProcessingResponse = weatherService.process(weatherProcessingRequest);
@@ -65,7 +71,9 @@ class WeatherServiceTestWithMockito {
 
 		final DateSpecifcAggregateData aggregateData = (DateSpecifcAggregateData) set.iterator().next();
 
-		assertThat(aggregateData.getWarning()).isEqualTo(WeatherServiceConstants.getRainWarningMessage());
+		assertThat(aggregateData.getWarning()).isEqualTo(messages.getMessage(WeatherServiceConstants.WEATHER_SERVICE_CONSTANTS_RAIN_WARNING, null,
+				Locale.getDefault())				//WeatherServiceConstants.getRainWarningMessage()
+				);
 
 
 	}

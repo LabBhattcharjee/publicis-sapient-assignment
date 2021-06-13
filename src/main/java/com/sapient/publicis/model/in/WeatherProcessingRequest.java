@@ -4,6 +4,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.Data;
 
 @Data
@@ -33,7 +35,7 @@ public class WeatherProcessingRequest {
 		cal.add(Calendar.DATE, maxNextDays + 1 - minNextDays);
 		this.maxDate = cal.getTime();
 		
-		this.locale = new Locale(language);
+		this.locale = StringUtils.isEmpty(language) ? Locale.getDefault() : new Locale(language);
 	}
 
 }
