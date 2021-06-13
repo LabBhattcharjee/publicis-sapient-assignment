@@ -2,6 +2,7 @@ package com.sapient.publicis.model.in;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import lombok.Data;
 
@@ -11,9 +12,10 @@ public class WeatherProcessingRequest {
 	private final String locations;
 	private final Date minDate;
 	private final Date maxDate;
+	private final Locale locale;
 
 	public WeatherProcessingRequest(final String locations, final Date thresholdDate, final int minNextDays,
-			final int maxNextDays) {
+			final int maxNextDays, final String language) {
 		this.locations = locations;
 
 		final Calendar cal = Calendar.getInstance();
@@ -30,6 +32,8 @@ public class WeatherProcessingRequest {
 
 		cal.add(Calendar.DATE, maxNextDays + 1 - minNextDays);
 		this.maxDate = cal.getTime();
+		
+		this.locale = new Locale(language);
 	}
 
 }

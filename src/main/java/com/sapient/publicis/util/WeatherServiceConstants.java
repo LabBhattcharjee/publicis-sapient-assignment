@@ -7,20 +7,12 @@ package com.sapient.publicis.util;
  * @author LabB
  *
  */
-public class WeatherServiceConstants {
+public interface WeatherServiceConstants {
 
-	public static final String DATE_FORMAT_YYYY_MM_DD = "yyyy-MM-dd"; //$NON-NLS-1$
+	String WEATHER_SERVICE_CONSTANTS_HEAT_WARNING = "WeatherServiceConstants.heat.warning";
+	String WEATHER_SERVICE_CONSTANTS_RAIN_WARNING = "WeatherServiceConstants.rain.warning";
+	String WEATHER_SERVICE_CONSTANTS_NO_DATA = "WeatherServiceConstants.no.data";
 
-	public static String getNoDataMessage() {
-		return Messages.getString("WeatherServiceConstants.no.data");
-	}
-
-	public static String getRainWarningMessage() {
-		return Messages.getString("WeatherServiceConstants.rain.warning");
-	}
-
-	public static String getHeatWarningMessage() {
-		return Messages.getString("WeatherServiceConstants.heat.warning");
-	}
+	String DATE_FORMAT_YYYY_MM_DD = "yyyy-MM-dd"; //$NON-NLS-1$
 
 }

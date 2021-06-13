@@ -14,4 +14,6 @@ public interface WeatherService {
 
 	WeatherProcessingResponse process(WeatherProcessingRequest request);
 
+	WeatherProcessingResponse process2(WeatherProcessingRequest weatherProcessingRequest);
+
 }
